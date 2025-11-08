@@ -1,0 +1,104 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: Roboto, sans-serif;
+    margin: 0 auto;
+}
+
+nav {
+    display: flex;
+    height: 75px;
+    justify-content: center;
+}
+
+.nav-container {
+    display: flex;
+    width: 1440px;
+}
+
+.nav-logo {
+    cursor: pointer;
+    max-width: 50px;
+    margin-right: auto;
+    object-fit: contain;
+}
+
+.nav-list {
+    align-items: center;
+    display: flex;
+    gap: 20px;
+    list-style: none;
+
+    & li {
+        color: #000;
+        font-weight: 700;
+        margin-right: 20px;
+        transition: color 0.3s ease;
+        text-transform: uppercase;
+    }
+
+    & li:hover {
+        color: #888;
+        cursor: pointer;
+    }
+}
+
+.intro, .about, .login {
+    max-width: 1440px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 100px;
+}
+
+.banner {
+    width: 100%;
+    height: 650px;
+    position: relative;
+    background-color: #000;
+
+    & img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center;
+    }
+}
+
+.banner-text {
+    color: #fff;
+    padding: 20px;
+    position: absolute;
+    top: 150px;
+    text-transform: uppercase;
+    right: 0;
+    width: 50%;
+
+    & h1 {
+        font-size: 96px;
+        margin-bottom: 20px;
+    }
+}
+
+.content {
+    background-color: #fff;
+    height: 650px;
+    width: 100%;
+
+    & img {
+        width: 50%;
+        height: 100%;
+        object-fit: cover;
+    }
+}
+
+.login-form {
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
