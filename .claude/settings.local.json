@@ -2,7 +2,13 @@
   "permissions": {
     "allow": [
       "WebSearch",
-      "Read(//c/Users/Casey/Pictures/**)"
+      "Read(//c/Users/Casey/Pictures/**)",
+      "Bash(npm run start:*)",
+      "Bash(open index.html)",
+      "Bash(cat:*)",
+      "Bash(lsof:*)",
+      "Bash(node server.js:*)",
+      "Bash(kill:*)"
     ],
     "deny": [],
     "ask": []

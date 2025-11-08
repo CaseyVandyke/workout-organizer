@@ -1,0 +1,12 @@
+{
+  "name": "workout-organizer",
+  "version": "1.0.0",
+  "description": "Workout organizer application",
+  "scripts": {
+    "start": "cd backend && npm start",
+    "install-all": "cd backend && npm install"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
