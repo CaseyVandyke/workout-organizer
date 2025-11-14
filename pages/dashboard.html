@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="../styles.css">
+    <title>Workout Tracker</title>
+</head>
+
+<body>
+    <header>
+        <nav>
+            <div class="nav-container">
+                <img class="nav-logo" src="../images/fitness.png" alt="dumbbell icon" />
+                <ul class="nav-list">
+                    <li><a href="../index.html">Home</a></li>
+                    <li><a href="about.html">About</a></li>
+                    <li><a href="dashboard.html">Dashboard</a></li>
+                    <li><a href="../index.html" id="logout">Logout</a></li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+    <main class="dashboard">
+        <h1 id="welcomeMessage"></h1>
+        <form>
+            <label for="workout-date">Workout Date</label>
+            <input type="text" id="workoutDate" placeholder="Enter workout date..." name="workout-date" required>
+            <label for="workout-name">Workout Name</label>
+            <input type="text" id="workoutName" placeholder="Enter workout name..." name="workout-name" required>
+            <label for="workout-sets">Workout Sets</label>
+            <input type="text" id="workoutSets" placeholder="Enter workout sets..." name="workout-sets" required>
+            <label for="workout-reps">Workout Reps</label>
+            <input type="text" id="workoutReps" placeholder="Enter workout reps..." name="workout-reps" required>
+        </form>
+    </main>
+    <script src="../script.js"></script>
+</body>
+
+</html>

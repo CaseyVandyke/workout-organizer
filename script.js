@@ -1,5 +1,8 @@
 const loginForm = document.getElementById('loginForm');
 const signupForm = document.getElementById('signupForm');
+const logout = document.getElementById('logout');
+const welcomeMessage = document.getElementById('welcomeMessage');
+
 
 if (loginForm) {
     loginForm.addEventListener('submit', handleLogin);
@@ -7,6 +10,14 @@ if (loginForm) {
 
 if (signupForm) {
     signupForm.addEventListener('submit', handleSignUp);
+}
+
+if (logout) {
+    handleLogout();
+}
+
+if (welcomeMessage) {
+    handleWelcomeMessage();
 }
 
 function handleSignUp(e) {
@@ -45,7 +56,8 @@ function handleSignUp(e) {
         if (data.success) {
             alert('Account created successfully!');
             localStorage.setItem('authToken', data.token);
-            window.location.href = '../index.html';
+            localStorage.setItem('username', data.username);
+            window.location.href = 'dashboard.html';
         } else {
             alert(data.message || 'Signup failed');
         }
@@ -93,7 +105,8 @@ function handleLogin(e) {
             if (data.success) {
                 alert('Welcome back!');
                 localStorage.setItem('authToken', data.token);
-                window.location.href = '../index.html';
+                localStorage.setItem('username', data.username);
+                window.location.href = 'dashboard.html';
             } else {
                 alert(data.message || 'Login failed');
             }
@@ -102,4 +115,21 @@ function handleLogin(e) {
             console.error('Error:', error);
             alert('Could not connect to server');
         });
+}
+
+function handleLogout() {
+    logout.addEventListener('click', () => {
+        localStorage.removeItem('authToken');
+        localStorage.removeItem('username');
+    })
+}
+
+function handleWelcomeMessage() {
+    const getUsername = localStorage.getItem('username');
+
+    if (getUsername) {
+        welcomeMessage.textContent = `Welcome Back ${getUsername}`;
+    } else {
+        window.location.href = 'login.html';
+    }
 }
