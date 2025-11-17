@@ -31,7 +31,7 @@ app.post('/api/signup', (req, res) => {
 
     db.get('SELECT * FROM users WHERE username = ? OR email = ?', [username, email], (err, existingUser) => {
         if (err) {
-            console.log('Database error:', err)
+            console.log('Database error:', err);
             return res.status(500).json({
                 success: false,
                 message: 'Server error'
@@ -48,11 +48,81 @@ app.post('/api/signup', (req, res) => {
         bcrypt.hash(password, SALT_ROUNDS, (err, password_hash) => {
             if (err) {
                 console.error('Bcrypt error:', err);
-                return res.json(500).json({
+                return res.status(500).json({
                     success: false,
                     message: 'Server error'
                 });
             }
-        })
+            db.run('INSERT INTO users (username, email, password_hash) VALUES (?, ?, ?)', [username, email, password_hash], (err) => {
+                if (err) {
+                    console.error('Insert error:', err);
+                    return res.status(500).json({
+                        success: false,
+                        message: 'Failed to create user'
+                    });
+                }
+
+                res.status(201).json({
+                    success: true,
+                    message: 'User created successfully',
+                    username
+                });
+            });
+        });
     });
-})
+});
+
+app.post('/api/login', (req, res) => {
+    const { username, password } = req.body;
+
+    if (!username || !password ) {
+        return res.status(400).json({
+            success: false,
+            message: 'All fields are required'
+        });
+    }
+
+    db.get('SELECT * FROM users WHERE username = ?', [username], (err, user) => {
+        if (err) {
+            return res.status(500).json({
+                success: false,
+                message: 'Server error'
+            });
+        }
+
+        if (!user) {
+            return res.status(401).json({
+                success: false,
+                message: 'Invalid username or password'
+            });
+        }
+        bcrypt.compare(password, user.password_hash, (err, isMatch) => {
+            if (err) {
+                return res.status(500).json({
+                    success: false,
+                    message: 'Server error' 
+                });
+            }
+
+            if (!isMatch) {
+                return res.status(401).json({
+                    success: false,
+                    message: 'Invalid username or password'
+                });
+            }
+
+            if (isMatch) {
+                return res.status(200).json({
+                    success: true,
+                    username,
+                    token: 'demo-token-login-123'
+                });
+            }
+        });
+    });
+});
+
+// Start server
+app.listen(PORT, () => {
+    console.log(`Server starting on http://localhost:${PORT}`);
+});
