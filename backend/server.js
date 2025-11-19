@@ -122,6 +122,28 @@ app.post('/api/login', (req, res) => {
     });
 });
 
+app.get('/api/exercises', (req, res) => {
+    const searchTerm = req.query.name;
+    if (!searchTerm || searchTerm.length < 3) {
+        return res.status(400).json({
+            success: false,
+            message: 'Search term must be at least 3 characters'
+        });
+    }
+    console.log('name is long enough');
+
+    db.all('SELECT * FROM exercises WHERE name LIKE ?', [`%${searchTerm}%`], (err, exercises) => {
+        if (err) {
+            return res.status(500).json({
+                success: false,
+                message: 'Database error'
+            });
+        }
+        console.log('Found exercises:', exercises);
+        res.json({ success: true, exercises });
+    });
+});
+
 // Start server
 app.listen(PORT, () => {
     console.log(`Server starting on http://localhost:${PORT}`);

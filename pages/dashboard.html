@@ -28,18 +28,10 @@
     </header>
     <main class="dashboard">
         <h1 id="welcomeMessage"></h1>
-        <form>
-            <label for="workout-date">Workout Date</label>
-            <input type="text" id="workoutDate" placeholder="Enter workout date..." name="workout-date" required>
-            <label for="workout-name">Workout Name</label>
-            <input type="text" id="workoutName" placeholder="Enter workout name..." name="workout-name" required>
-            <label for="workout-sets">Workout Sets</label>
-            <input type="text" id="workoutSets" placeholder="Enter workout sets..." name="workout-sets" required>
-            <label for="workout-reps">Workout Reps</label>
-            <input type="text" id="workoutReps" placeholder="Enter workout reps..." name="workout-reps" required>
-        </form>
+        <input type="search" id="exerciseSearch" placeholder="Search exercises..."/>
+        <div id="searchResults"></div>
     </main>
-    <script src="../script.js"></script>
+    <script src="../dashboard.js"></script>
 </body>
 
 </html>

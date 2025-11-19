@@ -20,6 +20,13 @@ const createUsersTable = `
     )
 `;
 
+const createExerciseTable = `
+    CREATE TABLE IF NOT EXISTS exercises (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT UNIQUE NOT NULL
+    )
+`;
+
 function initializeDatabase() {
     db.serialize(() => {
         db.run('PRAGMA foreign_keys = ON');
@@ -29,6 +36,14 @@ function initializeDatabase() {
                 console.error('Error creating users table:', err);
             } else {
                 console.log('Users table ready');
+            }
+        });
+
+        db.run(createExerciseTable, (err) => {
+            if (err) {
+                console.error('Error creating exercise', err);
+            } else {
+                console.log('Exercise table ready');
             }
         });
     });
