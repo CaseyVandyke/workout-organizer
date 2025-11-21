@@ -3,6 +3,12 @@ const welcomeMessage = document.getElementById('welcomeMessage');
 const exerciseSearch = document.getElementById('exerciseSearch');
 const searchResults = document.getElementById('searchResults');
 
+function finalSearch(exercise) {
+    console.log(exercise);
+    searchResults.innerHTML = '';
+    return exerciseSearch.value = `${exercise}`;
+}
+
 exerciseSearch.addEventListener('input', (e) => {
     const exercise = e.target.value;
 
@@ -19,7 +25,10 @@ exerciseSearch.addEventListener('input', (e) => {
             return response.json();
         })
         .then(data => {
-            console.log(data);
+            searchResults.innerHTML = '';
+            data.exercises.forEach((exercise) => {
+                searchResults.innerHTML += `<button onclick="finalSearch('${exercise.name}')">${exercise.name}</button>`;
+            })
         })
         .catch(error => {
             console.error('Error', error.message )
