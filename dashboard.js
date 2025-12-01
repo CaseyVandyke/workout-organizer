@@ -4,7 +4,6 @@ const exerciseSearch = document.getElementById('exerciseSearch');
 const searchResults = document.getElementById('searchResults');
 
 function finalSearch(exercise) {
-    console.log(exercise);
     searchResults.innerHTML = '';
     return exerciseSearch.value = `${exercise}`;
 }

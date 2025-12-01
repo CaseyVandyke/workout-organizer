@@ -30,6 +30,21 @@
         <h1 id="welcomeMessage"></h1>
         <input type="search" id="exerciseSearch" placeholder="Search exercises..."/>
         <div id="searchResults"></div>
+        <form id="exerciseRecord" style="display: none;">
+            <h3>Add Exercise</h3>
+            <p id="selectedExerciseName"></p>
+        
+            <label for="exerciseSets">Sets</label>
+            <input type="number" id="exerciseSets" placeholder="3" min="1" required />
+        
+            <label for="exerciseReps">Reps</label>
+            <input type="number" id="exerciseReps" placeholder="10" min="1" required />
+        
+            <label for="exerciseWeight">Weight (lbs)</label>
+            <input type="number" id="exerciseWeight" placeholder="135" min="0" step="0.5" />
+        
+            <button type="submit">Add to Workout</button>
+        </form>
     </main>
     <script src="../dashboard.js"></script>
 </body>
