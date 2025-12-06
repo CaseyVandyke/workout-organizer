@@ -33,9 +33,7 @@ function handleSignUp(e) {
             password
         })
     })
-    .then(response => {
-        return response.json();
-    })
+    .then(response => response.json())
     .then(data => {
         if (data.success) {
             alert('Account created successfully!');

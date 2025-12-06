@@ -2,6 +2,8 @@ const express = require('express');
 const cors = require('cors');
 const bcrypt = require('bcrypt');
 const db = require('./database');
+const jwt = require('jsonwebtoken');
+  const JWT_SECRET = '106cd143ad9978eb1516a2920703319cc70a5769e32985139d09a7d9c44fb501';
 
 // creates web server
 const app = express();
@@ -53,7 +55,7 @@ app.post('/api/signup', (req, res) => {
                     message: 'Server error'
                 });
             }
-            db.run('INSERT INTO users (username, email, password_hash) VALUES (?, ?, ?)', [username, email, password_hash], (err) => {
+            db.run('INSERT INTO users (username, email, password_hash) VALUES (?, ?, ?)', [username, email, password_hash], function(err) {
                 if (err) {
                     console.error('Insert error:', err);
                     return res.status(500).json({
@@ -61,6 +63,14 @@ app.post('/api/signup', (req, res) => {
                         message: 'Failed to create user'
                     });
                 }
+
+                const newUserId = this.lastID;
+                 // Generate JWT token for the new user
+                const token = jwt.sign(
+                    { id: newUserId, username: username },
+                    JWT_SECRET,
+                    { expiresIn: '24h' }
+                );
 
                 res.status(201).json({
                     success: true,
@@ -112,10 +122,16 @@ app.post('/api/login', (req, res) => {
             }
 
             if (isMatch) {
+                const token = jwt.sign(
+                    {id: user.id, username: user.username },
+                    JWT_SECRET,
+                    { expiresIn: '24h' }
+                );
+
                 return res.status(200).json({
                     success: true,
                     username,
-                    token: 'demo-token-login-123'
+                    token
                 });
             }
         });
@@ -141,6 +157,33 @@ app.get('/api/exercises', (req, res) => {
         }
         console.log('Found exercises:', exercises);
         res.json({ success: true, exercises });
+    });
+});
+
+app.post('/api/add-workout', (req, res) => {
+    const { username, exerciseName, sets, reps, weight } = req.body;
+
+    if (!username || !exerciseName || !sets || !reps || !weight) {
+        return res.status(400).json({
+            success: false,
+            message: 'All fields are required'
+        });
+    }
+    db.get('SELECT id FROM users WHERE username = ?', [username], (err, user) => {
+        if (err) {
+            return res.status(500).json({
+                success: false,
+                message: 'Database error'
+            });
+        }
+        console.log('Found user:', user);
+
+        // For now, just send success response
+        res.json({
+            success: true,
+            message: 'Workout logged! (Not saving to DB yet, just testing)',
+            data: { username, exerciseName, sets, reps, weight }
+        });
     });
 });
 

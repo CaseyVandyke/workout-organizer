@@ -19,7 +19,8 @@
       "Bash(git config:*)",
       "Bash(start index.html)",
       "Bash(git pull:*)",
-      "Bash(taskkill:*)"
+      "Bash(taskkill:*)",
+      "Bash(node -e:*)"
     ],
     "deny": [],
     "ask": []
