@@ -15,16 +15,15 @@ function handleAddWorkout(e) {
     const sets = document.querySelector('#exerciseSets').value;
     const reps = document.querySelector('#exerciseReps').value;
     const weight = document.querySelector('#exerciseWeight').value;
-    const username = localStorage.getItem('username');
     const exerciseName = selectedExerciseName.textContent;
 
     fetch('http://localhost:8080/api/add-workout', {
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('authToken')}` 
         },
         body: JSON.stringify({
-            username,
             exerciseName,
             sets,
             reps,

@@ -3,7 +3,33 @@ const cors = require('cors');
 const bcrypt = require('bcrypt');
 const db = require('./database');
 const jwt = require('jsonwebtoken');
-  const JWT_SECRET = '106cd143ad9978eb1516a2920703319cc70a5769e32985139d09a7d9c44fb501';
+const JWT_SECRET = '106cd143ad9978eb1516a2920703319cc70a5769e32985139d09a7d9c44fb501';
+
+// Middleware to verify JWT token
+function verifyToken(req, res, next) {
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1]; // Get token after "Bearer "
+
+    if (!token) {
+        return res.status(401).json({
+            success: false,
+            message: 'No token provided'
+        });
+    }
+
+    jwt.verify(token, JWT_SECRET, (err, decoded) => {
+        if (err) {
+            return res.status(403).json({
+                success: false,
+                message: 'Invalid token'
+            });
+        }
+
+        // Token is valid - attach user info to request
+        req.user = decoded; // decoded contains { id, username }
+        next(); // Continue to the actual endpoint
+    });
+}
 
 // creates web server
 const app = express();
@@ -55,7 +81,7 @@ app.post('/api/signup', (req, res) => {
                     message: 'Server error'
                 });
             }
-            db.run('INSERT INTO users (username, email, password_hash) VALUES (?, ?, ?)', [username, email, password_hash], function(err) {
+            db.run('INSERT INTO users (username, email, password_hash) VALUES (?, ?, ?)', [username, email, password_hash], (err) => {
                 if (err) {
                     console.error('Insert error:', err);
                     return res.status(500).json({
@@ -160,8 +186,11 @@ app.get('/api/exercises', (req, res) => {
     });
 });
 
-app.post('/api/add-workout', (req, res) => {
-    const { username, exerciseName, sets, reps, weight } = req.body;
+app.post('/api/add-workout', verifyToken, (req, res) => {
+    const { exerciseName, sets, reps, weight } = req.body;
+    const username = req.user.username;
+    const userId = req.user.id;
+    const today = new Date().toISOString().split('T')[0];
 
     if (!username || !exerciseName || !sets || !reps || !weight) {
         return res.status(400).json({
@@ -169,21 +198,18 @@ app.post('/api/add-workout', (req, res) => {
             message: 'All fields are required'
         });
     }
-    db.get('SELECT id FROM users WHERE username = ?', [username], (err, user) => {
+    db.get('SELECT id FROM workouts WHERE user_id = ? AND date = ?', [userId, today], (err, workout) => {
         if (err) {
             return res.status(500).json({
                 success: false,
                 message: 'Database error'
             });
         }
-        console.log('Found user:', user);
-
-        // For now, just send success response
-        res.json({
-            success: true,
-            message: 'Workout logged! (Not saving to DB yet, just testing)',
-            data: { username, exerciseName, sets, reps, weight }
-        });
+        if (workout){
+            console.log('Found existing workout:', workout.id);
+        } else {
+            console.log('Need to create new workout');
+        }
     });
 });
 
