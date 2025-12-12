@@ -101,7 +101,8 @@ app.post('/api/signup', (req, res) => {
                 res.status(201).json({
                     success: true,
                     message: 'User created successfully',
-                    username
+                    username,
+                    token
                 });
             });
         });
@@ -188,30 +189,20 @@ app.get('/api/exercises', (req, res) => {
 
 app.post('/api/add-workout', verifyToken, (req, res) => {
     const { exerciseName, sets, reps, weight } = req.body;
-    const username = req.user.username;
-    const userId = req.user.id;
-    const today = new Date().toISOString().split('T')[0];
 
-    if (!username || !exerciseName || !sets || !reps || !weight) {
-        return res.status(400).json({
-            success: false,
-            message: 'All fields are required'
-        });
-    }
-    db.get('SELECT id FROM workouts WHERE user_id = ? AND date = ?', [userId, today], (err, workout) => {
+    // First, find the exercise ID from the exercise name
+    db.get('SELECT * FROM exercises WHERE name = ?', [exerciseName], (err, exercise) => {
         if (err) {
             return res.status(500).json({
                 success: false,
                 message: 'Database error'
-            });
+            })
         }
-        if (workout){
-            console.log('Found existing workout:', workout.id);
-        } else {
-            console.log('Need to create new workout');
-        }
+        console.log('found exercise', exercise);
+    })
+
+        // TODO: Continue here
     });
-});
 
 // Start server
 app.listen(PORT, () => {

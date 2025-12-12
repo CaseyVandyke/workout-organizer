@@ -20,8 +20,8 @@ const createUsersTable = `
     )
 `;
 
-const createWorkoutsTable = `
-    CREATE TABLE IF NOT EXISTS workouts (
+const createSessionsTable = `
+    CREATE TABLE IF NOT EXISTS sessions (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         user_id INTEGER NOT NULL,
         name TEXT NOT NULL,
@@ -32,16 +32,16 @@ const createWorkoutsTable = `
     )
 `;
 
-const createWorkoutExercisesTable = `
-      CREATE TABLE IF NOT EXISTS workout_exercises (
+const createSessionExercisesTable = `
+      CREATE TABLE IF NOT EXISTS session_exercises (
           id INTEGER PRIMARY KEY AUTOINCREMENT,
-          workout_id INTEGER NOT NULL,
+          session_id INTEGER NOT NULL,
           exercise_id INTEGER NOT NULL,
           sets INTEGER NOT NULL,
           reps INTEGER NOT NULL,
           weight REAL,
           created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-          FOREIGN KEY (workout_id) REFERENCES workouts (id) ON DELETE CASCADE,
+          FOREIGN KEY (session_id) REFERENCES sessions (id) ON DELETE CASCADE,
           FOREIGN KEY (exercise_id) REFERENCES exercise (id)
       )
   `;
@@ -65,19 +65,19 @@ function initializeDatabase() {
             }
         });
 
-        db.run(createWorkoutsTable, (err) => {
+        db.run(createSessionsTable, (err) => {
             if (err) {
-                console.error('Error creating workout table', err);
+                console.error('Error creating sessions table', err);
             } else {
-                console.log('Workout table ready');
+                console.log('Sessions table ready');
             }
         });
 
-        db.run(createWorkoutExercisesTable, (err) => {
+        db.run(createSessionExercisesTable, (err) => {
             if (err) {
-                console.error('Error creating workout exercises table', err);
+                console.error('Error creating session exercises table', err);
             } else {
-                console.log('Workout exercise table ready');
+                console.log('Session exercises table ready');
             }
         })
 
