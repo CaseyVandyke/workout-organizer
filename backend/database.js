@@ -42,7 +42,7 @@ const createSessionExercisesTable = `
           weight REAL,
           created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
           FOREIGN KEY (session_id) REFERENCES sessions (id) ON DELETE CASCADE,
-          FOREIGN KEY (exercise_id) REFERENCES exercise (id)
+          FOREIGN KEY (exercise_id) REFERENCES exercises (id)
       )
   `;
 

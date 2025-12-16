@@ -189,6 +189,7 @@ app.get('/api/exercises', (req, res) => {
 
 app.post('/api/add-workout', verifyToken, (req, res) => {
     const { exerciseName, sets, reps, weight } = req.body;
+    const todaysDate = new Date().toISOString().split('T')[0]; 
 
     // First, find the exercise ID from the exercise name
     db.get('SELECT * FROM exercises WHERE name = ?', [exerciseName], (err, exercise) => {
@@ -198,11 +199,71 @@ app.post('/api/add-workout', verifyToken, (req, res) => {
                 message: 'Database error'
             })
         }
-        console.log('found exercise', exercise);
-    })
-
-        // TODO: Continue here
+        if (exercise.id) {
+            console.log('Exercise found:', exercise);
+            console.log('User ID:', req.user.id);
+            console.log('Todays date:', todaysDate);
+            db.get('SELECT * FROM sessions WHERE user_id = ? AND date = ?', [req.user.id, todaysDate], (err, session) => {
+                if (err) {
+                    return res.status(500).json({
+                        success: false,
+                        message: 'Database error'
+                    })
+                }
+                console.log('Session query result:', session);
+                if (session) {
+                    console.log('Session found:', session);
+                    db.run('INSERT INTO session_exercises (session_id, exercise_id, sets, reps, weight) VALUES (?, ?, ?, ?, ?)', [session.id, exercise.id, sets, reps, weight],
+                        function(err) {
+                            if (err) {
+                                console.log('INSERT ERROR (existing session):', err);
+                                return res.status(500).json({
+                                    success: false,
+                                    message: 'Failed to add exercise'
+                                });
+                            }
+                            res.status(200).json({
+                                success: true,
+                                message: 'Exercise Added!'
+                            });
+                        }
+                    )
+                } else {
+                    // Session doesn't exist - create new one
+                    console.log('No session found, creating new one');
+                    db.run('INSERT INTO sessions (user_id, name, date) VALUES (?, ?, ?)', [req.user.id, 'Workout', todaysDate],
+                        function(err) {
+                            if (err) {
+                                console.log('CREATE SESSION ERROR:', err);
+                                return res.status(500).json({
+                                    success: false,
+                                    message: 'Failed to create session'
+                                });
+                            }
+                            console.log('Session created successfully, ID:', this.lastID);
+                            const newSessionId = this.lastID;
+                            db.run('INSERT INTO session_exercises (session_id, exercise_id, sets, reps, weight) VALUES (?, ?, ?, ?, ?)', [newSessionId, exercise.id, sets, reps, weight],
+                                function(err) {
+                                    if (err) {
+                                        console.log('INSERT ERROR (new session):', err);
+                                        return res.status(500).json({
+                                            success: false,
+                                            message: 'Failed to add exercise'
+                                        });
+                                    }
+                                    res.status(200).json({
+                                        success: true,
+                                        message: 'Exercise Added!'
+                                    });
+                                }
+                            )
+                        }
+                    )
+                }
+            })
+        }
     });
+});
 
 // Start server
 app.listen(PORT, () => {
